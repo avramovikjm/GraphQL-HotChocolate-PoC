@@ -1,5 +1,6 @@
-bin
 obj
 .vs
 *.db
 firebase-config.json
+/bin
+/obj
