@@ -15,12 +15,10 @@ namespace GraphQLDemo.Schema.Queries
         {
             _coursesRepository = coursesRepository;
         }
-
-        //[UsePaging(IncludeTotalCount = true, DefaultPageSize = 1)]
-        [UseOffsetPaging(IncludeTotalCount = true, DefaultPageSize = 1)]
+        
+        [UseOffsetPaging(IncludeTotalCount = true, DefaultPageSize = 10)]
         public async Task<IEnumerable<CourseType>> GetCourses()
-        {
-            //return _courseFaker.Generate(5);
+        {           
             var courseDtos = await _coursesRepository.GetAll();
 
             return courseDtos.Select(c => new CourseType
@@ -28,50 +26,28 @@ namespace GraphQLDemo.Schema.Queries
                 Id = c.Id,
                 Name = c.Name,
                 Subject = c.Subject,
-                InstructorId = c.InstructorId
-                //Instructor = new InstructorType
-                //{
-                //    Id = c.Instructor!.Id,
-                //    FirstName = c.Instructor!.FirstName,
-                //    LastName = c.Instructor!.LastName,
-                //    Salary = c.Instructor!.Salary,
-                //}
+                InstructorId = c.InstructorId             
             });
         }
 
         [UseDbContext(typeof(SchoolDbContext))]
-        [UsePaging(IncludeTotalCount = true, DefaultPageSize = 2)]
+        [UsePaging(IncludeTotalCount = true, DefaultPageSize = 10)]
         [UseProjection]
         [UseFiltering(typeof(CourseFilterType))]
         [UseSorting(typeof(CourseSortType))]
         public IQueryable<CourseType> GetPaginatingCourses([ScopedService] SchoolDbContext context)
-        {
-            //return _courseFaker.Generate(5);
-            //var courseDtos = await _coursesRepository.GetAll();
-
+        {          
             return context.Courses.Select(c => new CourseType
             {
                 Id = c.Id,
                 Name = c.Name,
                 Subject = c.Subject,
-                InstructorId = c.InstructorId
-                //Instructor = new InstructorType
-                //{
-                //    Id = c.Instructor!.Id,
-                //    FirstName = c.Instructor!.FirstName,
-                //    LastName = c.Instructor!.LastName,
-                //    Salary = c.Instructor!.Salary,
-                //}
+                InstructorId = c.InstructorId               
             });
         }
 
         public async Task<CourseType> GetCourseById(Guid id)
         {
-            //await Task.Delay(1000);
-            //var course = _courseFaker.Generate();
-            //course.Id = id;
-            //return course;
-
             var courseDto = await _coursesRepository.GetById(id);
 
             return new CourseType
@@ -79,14 +55,7 @@ namespace GraphQLDemo.Schema.Queries
                 Id = courseDto!.Id,
                 Name = courseDto.Name,
                 Subject = courseDto.Subject,
-                InstructorId = courseDto.InstructorId//,
-                //Instructor = new InstructorType
-                //{
-                //    Id = courseDto.Instructor!.Id,
-                //    FirstName = courseDto.Instructor!.FirstName,
-                //    LastName = courseDto.Instructor!.LastName,
-                //    Salary = courseDto.Instructor!.Salary,
-                //}
+                InstructorId = courseDto.InstructorId             
             };
         }
 

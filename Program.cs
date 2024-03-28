@@ -20,16 +20,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddTransient<CourseTypeInputValidator>();
+builder.Services.AddTransient<InstructorTypeInputValidator>();
 string connectionString = builder.Configuration.GetConnectionString("default")!;
 builder.Services.AddPooledDbContextFactory<SchoolDbContext>(o => o.UseSqlite(connectionString).LogTo(Console.WriteLine));
 builder.Services.AddGraphQLServer()
     .AddAuthorization()
     .AddQueryType<Query>()
-    .AddMutationType<Mutation>()
+    .AddMutationType<Mutation>()    
     .AddSubscriptionType<Subscription>()
     .AddType<CourseType>()
     .AddType<InstructorType>()
     .AddTypeExtension<CourseQuery>()
+    .AddTypeExtension<InstructionQuery>()
+    .AddTypeExtension<CourseMutation>()
+    .AddTypeExtension<InstructorMutation>()
     .AddFiltering()
     .AddSorting()
     .AddProjections()
@@ -43,7 +47,7 @@ builder.Services.AddSingleton(FirebaseApp.Create());
 builder.Services.AddFirebaseAuthentication();
 builder.Services.AddAuthorization(o => o.AddPolicy("IsAdmin", p =>
 {
-    p.RequireClaim(FirebaseUserClaimType.EMAIL, "petar_1992georgiev@gmail.com");
+    p.RequireClaim(FirebaseUserClaimType.EMAIL, "");
 }));
 
 builder.Services.AddScoped<CoursesRepository>();
